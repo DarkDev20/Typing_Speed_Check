@@ -42,7 +42,7 @@ This is a basic Typing Speed Test web application developed using Flask, HTML, C
 ### File Structure
 ```
 /typing-speed-test
-│── app.py              # Flask backend
+│── app.py            # Flask backend
 │── /templates
 │   └── index.html      # Frontend user interface
 │── README.md           # Project documentation
