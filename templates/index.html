@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Typing Speed Test</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        #typing-area { width: 60%; padding: 10px; margin-top: 10px; }
+        #results { margin-top: 20px; font-size: 18px; }
+        button { padding: 10px 20px; margin-top: 10px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>Typing Speed Test</h1>
+    <p><strong>Type this phrase:</strong></p>
+    <p id="phrase">{{ phrase }}</p>
+
+    <textarea id="typing-area" rows="3" placeholder="Start typing here..."></textarea>
+    <br>
+    <button onclick="submitTest()">Submit</button>
+
+    <div id="results"></div>
+
+    <script>
+        let startTime;
+
+        document.getElementById("typing-area").addEventListener("focus", function() {
+            startTime = new Date().getTime(); 
+        });
+
+        function submitTest() {
+            let inputText = document.getElementById("typing-area").value;
+            let endTime = new Date().getTime();
+
+            $.ajax({
+                url: "/calculate_results",
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify({
+                    input_text: inputText,
+                    phrase: document.getElementById("phrase").innerText,
+                    start_time: startTime / 1000,  
+                    end_time: endTime / 1000
+                }),
+                success: function(response) {
+                    document.getElementById("results").innerHTML = `
+                        <p>Total Words: ${response.total_words}</p>
+                        <p>Time Used: ${response.time_used} seconds</p>
+                        <p>Accuracy: ${response.accuracy}%</p>
+                        <p>Speed: ${response.words_per_minute} WPM</p>
+                        <button onclick="window.location.reload()">Try Again</button>
+                    `;
+                }
+            });
+        }
+    </script>
+</body>
+</html>
